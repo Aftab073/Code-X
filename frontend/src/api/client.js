@@ -1,4 +1,4 @@
 import axios from "axios";
 export default axios.create({
-  baseURL: "http://localhost:8000", // change when hosted
+  baseURL: "https://code-x-afeu.onrender.com", // change when hosted
 });

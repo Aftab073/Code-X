@@ -11,7 +11,7 @@ const CodeEditor = () => {
 
   const handleRunCode = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/run", {
+      const res = await axios.post("https://code-x-afeu.onrender.com/run", {
         code,
         input,
       });
