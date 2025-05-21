@@ -152,7 +152,7 @@ const CodeEditor = () => {
           <motion.textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            rows={4}
+            rows={3}
             placeholder="Enter input values here (one per line)"
             className="w-full p-4 rounded-xl bg-gray-50 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-400 focus:border-transparent font-mono text-sm shadow-sm transition-all resize-none"
           />
