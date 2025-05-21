@@ -69,44 +69,29 @@ def validate_code_security(code: str) -> bool:
 @app.post("/run", response_model=ExecutionResponse)
 async def run_code(req: CodeRequest, request: Request):
     """Execute Python code in a secure environment"""
-    
-    # Security validation
-    if not validate_code_security(req.code):
-        logger.warning(f"Blocked potentially dangerous code from {request.client.host}")
-        raise HTTPException(
-            status_code=400,
-            detail="Code contains potentially dangerous operations"
-        )
-    
-    if req.language.lower() != "python":
-        return JSONResponse(
-            status_code=400,
-            content={
-                "output": "Only Python is supported right now",
-                "error": True
-            }
-        )
-    
-    # Execute the code
     try:
+        # Security validation
+        if not validate_code_security(req.code):
+            logger.warning(f"Blocked dangerous code from {request.client.host}")
+            raise HTTPException(status_code=400, detail="Dangerous code patterns detected")
+
+        if req.language.lower() != "python":
+            raise HTTPException(status_code=400, detail="Only Python supported")
+
         start_time = datetime.now()
         output = execute_python_code(req.code, req.input)
         execution_time = (datetime.now() - start_time).total_seconds()
-        
-        error = "❌" in output  # Simple error detection
-        
+
         return {
             "output": output,
             "execution_time": execution_time,
-            "error": error
+            "error": "❌" in output,
+            "timestamp": datetime.now().isoformat()
         }
-        
+
     except Exception as e:
-        logger.error(f"Execution error: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Execution failed: {str(e)}"
-        )
+        logger.exception(f"Execution failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
 async def health_check():
